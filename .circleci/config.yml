@@ -1,15 +1,16 @@
 version: 2
 defaults: &defaults
-  machine: true
+  docker:
+    - image: fourkitchens/ubuntu-1604-php72-node10-apache
   environment:
-    DATE_TIMEZONE: America/Chicago
+    DATE_TIMEZONE: America/New_York
     TERM: xterm
     ACQUIA_CANONICAL_ENV: prod
     ACQUIA_ENDPOINT: https://cloudapi.acquia.com/v1
     ACQUIA_REALM: devcloud
     ACQUIA_SITE: s5ea988db29353
     ACQUIA_REPO: s5ea988db29353@svn-2420.devcloud.hosting.acquia.com:s5ea988db29353.git
-    ACQUIA_BOT_EMAIL: pipeline@drupal.com
+    ACQUIA_BOT_EMAIL: pipeline@circleci.com
     ACQUIA_BOT_NAME: "Pipeline Server"
   working_directory: ~/project
 
