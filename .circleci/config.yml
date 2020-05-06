@@ -1,13 +1,57 @@
-# This is a temporary dummy config to stop CircleCI from building this branch with automatic v1.0 configuration for PHP
-
 version: 2
+defaults: &defaults
+  machine: true
+  environment:
+    DATE_TIMEZONE: America/Chicago
+    TERM: xterm
+    ACQUIA_CANONICAL_ENV: prod
+    ACQUIA_ENDPOINT: https://cloudapi.acquia.com/v1
+    ACQUIA_REALM: devcloud
+    ACQUIA_SITE: s5ea988db29353
+    ACQUIA_REPO: s5ea988db29353@svn-2420.devcloud.hosting.acquia.com:s5ea988db29353.git
+    ACQUIA_BOT_EMAIL: pipeline@drupal.com
+    ACQUIA_BOT_NAME: "Pipeline Server"
+  working_directory: ~/project
+
 jobs:
   build:
-    docker:
-      - image: alpine
-    # Ignore all branches
-    branches:
-      ignore:
-        - /.*/
+    <<: *defaults
     steps:
-      - run: echo 'Hello World'
+      - checkout
+      - run: echo "A first hello"
+      - run: mkdir -p my_workspace
+      - run: echo "Trying out workspaces" > my_workspace/echo-output
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory
+          root: my_workspace
+          # Must be relative path from root
+          paths:
+            - echo-output 
+
+  deploy:
+    <<: *defaults   
+    steps:
+      - checkout
+      - run: echo "A first hello"
+      - run: mkdir -p my_workspace
+      - run: echo "Trying out workspaces" > my_workspace/echo-output
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory
+          root: my_workspace
+          # Must be relative path from root
+          paths:
+            - echo-output 
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+                - develop
